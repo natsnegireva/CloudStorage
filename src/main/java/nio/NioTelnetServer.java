@@ -34,76 +34,25 @@ public class NioTelnetServer {
                 if (key.isReadable()) {
                     handleRead(key, selector);
                 }
+                if (key.isWritable()) {
+                    System.out.println(key);
+                }
                 iterator.remove();
             }
         }
     }
 
-    
-    
-    // TODO: 30.10.2020 list (ls) - возвращает список файлов
-    private String getFilesList() {
-        return String.join(" ", new File(rootPath).list());
-    }
-
-    //  TODO: 30.10.2020 copy (src, target) скопировать файл из одного в другой
-    static void copy(Path src, Path target) throws IOException {
-       Files.copy((Paths.get(path.getParent().toString(), src)),
-               (Paths.get(path.getParent().toString(), target),
-               StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    // дописать в конец фаула
-    static void appendText(Path src, String s) throws IOException {
-    Path src = Path.of(usrPath.get(key).toString(), s);
-    Files.write(Paths.get(src), s.getBytes(), StandardOpenOption.APPEND);
-    }
-
-    // TODO: 30.10.2020 создать файл
-    static void createFile(String fileName) throws IOException {
-        Path path = Path.of(usrPath.get(key).toString(), fileName);
-        if (!Files.exists(path)) {
-            try {
-            Files.createFile(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // TODO: 30.10.2020 rm (name) удалить файл по имени
-    private void deleteFile(String fileName, SelectableChannel key){
-        Path path = Path.of(usrPath.get(key).toString(), fileName);
-        if (!Files.exists(path)){
-            try {
-                Files.delete(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } 
-    }
-
-
-    //  TODO: 30.10.2020 mkdir (name) создать директорию
-    private void createDirectory(String directory, SelectableChannel key){
-        Path path = Path.of(usrPath.get(key).toString(), directory);
-        if (!Files.exists(path)){
-            try {
-                Files.createDirectory(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void handleRead(SelectionKey key, Selector selector) throws IOException {
+
         SocketChannel channel = (SocketChannel) key.channel();
         int read = channel.read(buffer);
         if (read == -1) {
+            System.out.println(-1);
             channel.close();
             return;
         }
         if (read == 0) {
+            System.out.println(0);
             return;
         }
         buffer.flip();
@@ -135,6 +84,7 @@ public class NioTelnetServer {
         }
     }
 
+    @SuppressWarnings("unckeked")
     private String getFilesList() {
         return String.join(" ", new File(rootPath).list());
     }
